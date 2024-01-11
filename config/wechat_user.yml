@@ -1,0 +1,19 @@
+"en":
+  activerecord:
+    models:
+      wechat_user: "Wechat user"
+    attributes:
+      wechat_user:
+        openid: "Openid"
+        unionid: "Unionid"
+        session_key: "Session key"
+
+"zh-CN":
+  activerecord:
+    models:
+      wechat_user: "Wechat user"
+    attributes:
+      wechat_user:
+        openid: "Openid"
+        unionid: "Unionid"
+        session_key: "Session key"
