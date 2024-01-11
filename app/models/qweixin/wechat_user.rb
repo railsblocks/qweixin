@@ -1,2 +1,0 @@
-class WechatUser < ApplicationRecord
-end

@@ -1,3 +1,4 @@
 Qweixin::Engine.routes.draw do
-  get 'token/getAccessToken'
+  resources :users
+
 end
