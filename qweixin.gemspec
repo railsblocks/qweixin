@@ -5,17 +5,17 @@ Gem::Specification.new do |spec|
   spec.version     = Qweixin::VERSION
   spec.authors     = ["qichunren"]
   spec.email       = ["whyruby@gmail.com"]
-  spec.homepage    = "https://github.com/qichunren"
+  spec.homepage    = "https://github.com/railsblocks"
   spec.summary     = "Qweixin is a rails engine that power weixin feature."
   spec.description = "Qweixin is a rails engine that power weixin feature."
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the "allowed_push_host"
   # to allow pushing to a single host or delete this section to allow pushing to any host.
-  spec.metadata["allowed_push_host"] = "https://github.com/qichunren/sitebuilder"
+  spec.metadata["allowed_push_host"] = "https://github.com/railsblocks"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/qichunren/sitebuilder"
-  spec.metadata["changelog_uri"] = "https://github.com/qichunren/sitebuilder/Changelog"
+  spec.metadata["source_code_uri"] = "https://github.com/railsblocks/qweixin"
+  spec.metadata["changelog_uri"] = "https://github.com/railsblocks/qweixin/Changelog"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
     Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
