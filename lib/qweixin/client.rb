@@ -33,11 +33,11 @@ module Qweixin
     #   "errcode":0,
     #   "errmsg":"xxxxx"
     # }
-    def code2Session(js_code:)
+    def code2session(js_code:)
       raise "Client appid/secrect is not configured!" if Client.config.appid.blank? || Client.config.secret.blank?
       raise "js_code is required!" if js_code.blank?
 
-      api_uri = URI("https://api.weixin.qq.com/sns/jscode2session?#{Qweixin::Client.config.appid}&secret=#{Qweixin::Client.config.secret}&js_code=#{js_code}&grant_type=authorization_code")
+      api_uri = URI("https://api.weixin.qq.com/sns/jscode2session?appid=#{Qweixin::Client.config.appid}&secret=#{Qweixin::Client.config.secret}&js_code=#{js_code}&grant_type=authorization_code")
       # https://docs.ruby-lang.org/en/master/Net/HTTP.html
 
       response = Net::HTTP.get(api_uri)

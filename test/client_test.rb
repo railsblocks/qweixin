@@ -16,4 +16,15 @@ class ClientTest < ActiveSupport::TestCase
     assert result_json["expires_in"]
   end
 
+  test "it should get invalid response when request weixin app login" do
+    client = Qweixin::Client.new
+    invalid_js_code = "24334233"
+    result_json = client.code2session(js_code: invalid_js_code)
+    # {"errcode"=>40029, "errmsg"=>"invalid code, rid: 65a13fa1-50a5ffef-30645fdc"}
+    # keys: ["errcode", "errmsg"] ???
+    assert result_json["errcode"]
+    assert result_json["errmsg"]
+    # assert result_json[:rid] #### This is invalid
+  end
+
 end
