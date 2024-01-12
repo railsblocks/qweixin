@@ -3,5 +3,5 @@ require "qweixin/engine"
 require "qweixin/client"
 
 module Qweixin
-  # Your code goes here...
+  mattr_accessor :encryptor
 end
