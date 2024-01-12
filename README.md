@@ -21,10 +21,19 @@ Or install it yourself as:
 $ gem install qweixin
 ```
 
-Add the following line to your `config/routes.rb`:
+## Usage
+
+Add config/initializers/qweixin.rb
 
 ```ruby
-mount Qweixin::Engine => "/qweixin" if defined?(Qweixin::Engine)
+
+Rails.application.config.qweixin.secret = "balabala_secret"
+
+Qweixin::Client.configure do |config|
+  config.appid = ENV["WEIXIN_APPID"] # 小程序唯一凭证，即 AppID
+  config.secret = ENV["WEIXIN_APPSECRET"] # 小程序唯一凭证密钥，即 AppSecret，获取方式同 appid
+end
+
 ```
 
 ## Contributing
