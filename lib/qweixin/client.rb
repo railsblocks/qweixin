@@ -41,8 +41,8 @@ module Qweixin
       # https://docs.ruby-lang.org/en/master/Net/HTTP.html
 
       response = Net::HTTP.get(api_uri)
-      puts "weixin response: #{response}"
-      JSON.parse(response)
+      # puts "weixin response: #{response}"
+      JSON.parse(response) rescue {}
     end
   end
 end

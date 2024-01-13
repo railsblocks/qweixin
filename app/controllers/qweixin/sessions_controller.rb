@@ -6,18 +6,23 @@ module Qweixin
     # 登录凭证校验。通过 wx.login 接口获得临时登录凭证 code 后传到开发者服务器调用此接口完成登录流程。更多使用方法详见小程序登录。
     # https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/login.html
     # GET /weixin/app_login
-    def jscode2session
+    def code2session
       client = Client.new
-      result = client.code2session(js_code: params[:js_code])
-      puts 'result: ', result.inspect
-
-      User.find_or_create_by(openid: result["openid"]) do |user|
-        user.session_key = result["session_key"]
-        user.unionid = result["unionid"]
-        user.last_appid = Client.config.appid
+      api_response = client.code2session(js_code: params[:code])
+      # puts 'result: ', api_response.inspect
+      if api_response.fetch("errcode", 0) != 0
+        render json: api_response.slice("errcode", "errmsg")
+      else
+        # {"session_key"=>"xxxxxxxxxxxxxxxxxxxxxx==", "openid"=>"aaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+        user = User.find_or_create_by(openid: api_response["openid"]) do |user|
+          user.session_key = api_response["session_key"]
+          user.unionid = api_response["unionid"]
+          user.last_appid = Client.config.appid
+        end
+        json_content = { user_id: user.id, login_at: Time.current.to_i }
+        token = Qweixin.encryptor.encrypt_and_sign(json_content.to_json)
+        render json: { token: token, errcode: 0, errmsg: "ok" }
       end
-
-      render json: result
     end
 
   end
