@@ -1,5 +1,5 @@
 
-Rails.application.config.qweixin.secret = "balabala_secret"
+Rails.application.config.qweixin.secret = "dc5aeec76edfad04a67c3cf1f7929478"
 
 Qweixin::Client.configure do |config|
   config.appid = ENV["WEIXIN_APPID"] # 小程序唯一凭证，即 AppID，可在「微信公众平台 - 设置 - 开发设置」页中获得。（需要已经成为开发者，且帐号没有异常状态）
