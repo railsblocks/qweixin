@@ -8,45 +8,34 @@ module Qweixin
       @user = qweixin_users(:one)
     end
 
-    test "should get index" do
-      get users_url
+    test "should get not user json without auth token" do
+      get user_url
       assert_response :success
+      assert_equal "{\"errcode\":10000,\"errmsg\":\"user not found\"}", response.body
     end
 
-    test "should get new" do
-      get new_user_url
-      assert_response :success
-    end
+    test "should get not user json after app login" do
+      valid_code = "AAAABBCCCCMDpR1Qnl111rS1rY3C5i1c"
+      net_http_mock = Minitest::Mock.new
+      mocked_response = '{"session_key":"AAASrAB+K5Y1u44y4jNsjQ==","openid":"#{SecureRandom.hex}"}'
+      mocked_arg = URI("https://api.weixin.qq.com/sns/jscode2session?appid=#{Qweixin::Client.config.appid}&secret=#{Qweixin::Client.config.secret}&js_code=#{valid_code}&grant_type=authorization_code")
+      net_http_mock.expect(:call, mocked_response, [mocked_arg])
 
-    test "should create user" do
-      assert_difference("User.count") do
-        post users_url, params: { user: { last_appid: @user.last_appid, openid: @user.openid, session_key: @user.session_key, unionid: @user.unionid } }
+      Net::HTTP.stub(:get, net_http_mock) do
+        # send request with auth token in header
+        get "/weixin/app_login?code=#{valid_code}"
+        assert_response :success
+
+        # get user_url request, with auth token in header
+        token = User.last.generate_auth_token
+        get user_url, headers: { 'Authorization' => token }
+        result_json = JSON.parse(response.body)
+        assert_equal ["errcode", "errmsg", "user_info"], result_json.keys
+        assert_equal ["id", "nickname", "mobile", "avatar"], result_json["user_info"].keys
       end
 
-      assert_redirected_to user_url(User.last)
     end
 
-    test "should show user" do
-      get user_url(@user)
-      assert_response :success
-    end
 
-    test "should get edit" do
-      get edit_user_url(@user)
-      assert_response :success
-    end
-
-    test "should update user" do
-      patch user_url(@user), params: { user: { last_appid: @user.last_appid, openid: @user.openid, session_key: @user.session_key, unionid: @user.unionid } }
-      assert_redirected_to user_url(@user)
-    end
-
-    test "should destroy user" do
-      assert_difference("User.count", -1) do
-        delete user_url(@user)
-      end
-
-      assert_redirected_to users_url
-    end
   end
 end

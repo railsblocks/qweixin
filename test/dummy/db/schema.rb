@@ -12,6 +12,9 @@
 
 ActiveRecord::Schema[7.1].define(version: 2024_01_11_055137) do
   create_table "qweixin_users", force: :cascade do |t|
+    t.string "nickname"
+    t.string "mobile"
+    t.string "avatar"
     t.string "session_key"
     t.string "unionid"
     t.string "openid"

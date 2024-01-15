@@ -3,6 +3,7 @@ require "net/http"
 module Qweixin
   class Client
     include ActiveSupport::Configurable
+    attr_accessor :access_token
 
     # https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/mp-access-token/getAccessToken.html
     # 获取接口调用凭据
@@ -19,7 +20,9 @@ module Qweixin
       # https://docs.ruby-lang.org/en/master/Net/HTTP.html
 
       response = Net::HTTP.get(api_uri)
-      JSON.parse(response)
+      response_json = JSON.parse(response) rescue {}
+      self.access_token = response_json["access_token"]
+      response_json
     end
 
     # https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/user-login/code2Session.html
@@ -44,5 +47,19 @@ module Qweixin
       # puts "weixin response: #{response}"
       JSON.parse(response) rescue {}
     end
+
+    # DOC: https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/user-login/checkSessionKey.html
+    # GET https://api.weixin.qq.com/wxa/checksession?access_token=ACCESS_TOKEN
+    def checksession(access_token:)
+      raise "access_token is required!" if access_token.blank?
+
+      api_uri = URI("https://api.weixin.qq.com/wxa/checksession?access_token=#{access_token}")
+      # https://docs.ruby-lang.org/en/master/Net/HTTP.html
+
+      response = Net::HTTP.get(api_uri)
+      # puts "weixin response: #{response}"
+      JSON.parse(response) rescue {}
+    end
+
   end
 end
