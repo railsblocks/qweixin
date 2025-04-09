@@ -1,6 +1,14 @@
 require "test_helper"
 
 class ClientTest < ActiveSupport::TestCase
+
+  setup do
+    Qweixin::Client.configure do |config|
+      config.appid = "balabala12345"
+      config.secret = "1234567890"
+    end
+  end
+
   test "it has a config item: appid" do
     assert Qweixin::Client.config.appid
   end
@@ -41,6 +49,20 @@ class ClientTest < ActiveSupport::TestCase
       assert result_json["errcode"]
       assert result_json["errmsg"]
     end
+  end
+
+  test "it should build request signature" do
+    client = Qweixin::Client.new
+
+    http_method_type = "GET"
+    url = "/v3/refund/domestic/refunds/123123123123"
+    timestamp = "1554208460"
+    nonce = "593BEC0C930BF1AFEB40B4A08C8FB242"
+    request_body = ""
+    key_pem_file_path = File.expand_path("../fixtures/apiclient_test_key.pem", __FILE__)
+    signature = client.build_request_signature(http_method_type, url, timestamp, nonce, request_body, key_pem_file_path)
+    puts "signature:#{signature}"
+    assert signature
   end
 
 end

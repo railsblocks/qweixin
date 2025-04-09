@@ -1,4 +1,5 @@
 require "net/http"
+require 'openssl'
 
 module Qweixin
   class Client
@@ -59,6 +60,32 @@ module Qweixin
       response = Net::HTTP.get(api_uri)
       # puts "weixin response: #{response}"
       JSON.parse(response) rescue {}
+    end
+
+    # 官方文档：https://pay.weixin.qq.com/doc/v3/merchant/4012791856
+    # JSAPI/小程序下单
+    # JSAPI支付场景(微信内置浏览器打开的网页)或小程序支付场景，商户需调用该接口在微信支付下单，生成用于调起支付的预支付交易会话标识(prepay_id)。
+    def v3_pay_transaction_jsapi_encrypt()
+
+    end
+
+    # 官方文档：https://pay.weixin.qq.com/doc/v3/merchant/4012365342
+    # 构建 APIv3 签名
+    def build_request_signature(http_method_type, url, timestamp, nonce, request_body, key_pem_file)
+      http_method_type = http_method_type.upcase
+      ts = timestamp || Time.now.to_i # 当前时间戳
+      nonce_str = nonce || SecureRandom.hex(16) # 随机字符串
+      string_to_sign = "#{http_method_type}\n#{url}\n#{ts}\n#{nonce_str}\n#{request_body}\n"
+      # 将字符串进行 SHA256 with RSA签名
+      key_pem_file_path = key_pem_file
+      private_key = OpenSSL::PKey::RSA.new(File.read(key_pem_file))
+
+      # 生成SHA256 with RSA签名
+      signature = private_key.sign(OpenSSL::Digest::SHA256.new, string_to_sign)
+
+      # 将哈希值进行 Base64 编码
+      base64_signature = Base64.strict_encode64(signature)
+      base64_signature
     end
 
   end
